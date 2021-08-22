@@ -1698,6 +1698,3 @@ Let's have a look:
 
 
 Beautiful. We could also implement additional constraints, like no. stars on each hotel, or flight arrival times etc. (I don't like the flight from Milan to Athens, arriving at 9 pm), but it should be fairly easy to implement those...
-
-Enjoy your holidays everyone!!
-
