@@ -86,7 +86,7 @@ Gathering the data is now simple:
                       no_processes =  cpu_count() - 1) # cpu_count() - 1
     
     
-    scraper.run(destinations = ['Wroclaw', 'Bilbao', 'Colmar', 'Hvar', 'Riga', 'Milan', 'Athens', 'Budapest', 'Lisbon', 'Bohinj'], # https://www.europeanbestdestinations.com/european-best-destinations-2018/ 
+    scraper.run(destinations = ['Wroclaw', 'Bilbao', 'Colmar', 'Hvar', 'Riga', 'Milan', 'Athens', 'Budapest', 'Lisbon', 'Bohinj'],
                 start_date = "01/07/2019", 
                 end_date = "01/08/2019", 
                 no_adults = 2)
@@ -108,27 +108,14 @@ Gathering the data is now simple:
 ## Results
 <a id="scrape_res"></a>
 
-This took some time.. Now, we have two files, containing all the data we want:
+ Now we have two files containing all the data:
 
 ```python
 hotels = pd.read_excel('./data/hotels.xlsx')
 hotels.head(5)
 ```
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
