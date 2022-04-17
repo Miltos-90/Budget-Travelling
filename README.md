@@ -312,11 +312,8 @@ Next up, we need to fill in the room info. Namely, the number of adults:
     
 ```
 
-Perfect. Finally, we need to collect the best offer identified by the website. The results returned are already sorted according to their recommendations algorithm, so we just need to grab the first offer we get (I trust that their recommender is a good one :)). A typical result returned is the following:
-
-![typical_result_hotel](img/trivago_typical_result.png)
-
-There are a few things we need from this tab: Hotel name, no. stars, the website that offers the deal, and the total price. Let's also add check-in and check-out dates on this list so that we can make a one-line dataframe that will be later appended to the rest of the results:
+Perfect. Finally, we need to collect the best offer identified by the website. The results returned are already sorted according to their recommendations algorithm, so we just need to grab the first offer we get (trust in their recommenders).
+There are a few things we need: Hotel name, no. stars, the website that offers the deal, and the total price. Let's also add check-in and check-out dates on this list so that we can make a one-line dataframe that will be later appended to the rest of the results:
 
 
 ```python
