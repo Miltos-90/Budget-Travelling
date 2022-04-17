@@ -277,6 +277,8 @@ The problem we are trying to solve can be formulated as a binary integer linear 
 In the following, we'll introduce our decision variables, the objective function to be minimised, along with the necessary constraints. We'll also introduce the necessary notation as we go along:
 
 ### Decision Variables
+<img src="https://render.githubusercontent.com/render/math?math=x_{f}^{o,d,t} \in Z_2^{p(p-1)q}>
+          
 First of all, we need to introduce some notation, along with our decision variables:
 * <img src="https://render.githubusercontent.com/render/math?math=x_{f}^{o,d,t} \in Z_2^{p(p-1)q}> are binary decision variables, one for each flight in the dataset, having a value of 1 if a flight is active (i.e. to be taken), or 0 if it is not active. $o$ refers to the outbound city (origin), $d$ refers to the inbound city (destination), and $t$ is the day of travel. The total number of variables is $q$ (number of days in the dataset), times $p(p-1)$, as the same city cannot be an origin and a destination at the same time.
 * $x_{h}^{o,t_b,t_e} \in Z_2^{pq(q+1)/2}$ are, again, binary decision variables, one for each hotel, denoted by subscipt $o$ and duration of stay $(t_b, t_e)$, with $t_b$ being the day we'll start occupying a room in the hotel, and $t_e$, the day we'll depart from it. Note that, the number of elements is $p$ (one hotel for each city) times $q(q+1)/2$, which is the number of all possible stay durations (equal to the number of elements in the upper triangle of a square matrix). If, for example, we check-in on the 13th of July, we can only checkout on the days that follow (on the 14th, 15th etc), not the preceding ones (12th, 11th, etc).
