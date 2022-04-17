@@ -278,11 +278,11 @@ We have binary decision variables, one for each flight in the dataset, having a 
 The objective function is the total cost of our holidays, i.e. cost of every hotel and every flight we take.
 
 Regarding constraints, we need the following:
-- we start our holidays from the home node, and we also arrive back to the home node at the end of the holiday period. This means that there must be exactly one flight from the home node (Amsterdam) at time $t = 0$, and exactly one flight towards the home node at the end. All flights with a different outbound city in the dataset are not allowed.
+- we start our holidays from the home node, and we also arrive back to the home node at the end of the holiday period. This means that there must be exactly one flight from the home node (Amsterdam) in the beginning, and exactly one flight towards the home node at the end. All flights with a different outbound city in the dataset are not allowed.
 - Moreover, we have to make sure that each city is visited at most once (apart from the home node). This also means that there is at most one flight towards every destination, and one flight from every origin.
 Each hotel stay must be accompanied by the corresponding inbound and outbound flight (there's no way to get to a city without taking a flight towards it, and you can't get out with another flight).
-- At least N cities will be visited. For cost minimisation (if the problem is formulated properly), this essentially means that exactly $N$ cities will be visited. Furthermore, at least $N + 1$ flights will be taken (+ 1 to return to the home node at the end).
--Finally, we need to implement a minimum stay duration of $K$ days at each city, apart from the home node. This means that, if a city is visited on a certain date, we need to restrict all outgoing flights for the next $K$ days. The equality constraints introduced above will then ensure that any other hotel stays for the next $K$ days will be zeroed out. This can be implemented with the following set of big-M constraints.
+- At least N cities will be visited. For cost minimisation (if the problem is formulated properly), this essentially means that exactly $N$ cities will be visited. Furthermore, at least N + 1 flights will be taken (+ 1 to return to the home node at the end).
+-Finally, we need to implement a minimum stay duration of K days at each city, apart from the home node. This means that, if a city is visited on a certain date, we need to restrict all outgoing flights for the next K days. The equality constraints introduced above will then ensure that any other hotel stays for the next $K$ days will be zeroed out. This can be implemented with the following set of big-M constraints.
 - We need to set additional constraints for the to- and from- home node.
 
 ## PuLP programming
@@ -571,4 +571,4 @@ Let's have a look:
     5    Athens  07/25/2019  08/01/2019              Hotel Grand Hyatt Athens      5  Booking.com    734
 
 
-Beautiful. We could also implement additional constraints, like no. stars on each hotel, or flight arrival times etc. (I don't like the flight from Milan to Athens, arriving at 9 pm), but it should be fairly easy to implement those...
+Beautiful. We could also implement additional constraints, like no. stars on each hotel, or flight arrival times etc.
