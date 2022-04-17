@@ -274,84 +274,18 @@ The problem we are trying to solve can be formulated as a binary integer linear 
 
 <a id="formulation"></a>
 
-In the following, we'll introduce our decision variables, the objective function to be minimised, along with the necessary constraints. We'll also introduce the necessary notation as we go along:
+We have binary decision variables, one for each flight in the dataset, having a value of 1 if a flight is active (i.e. to be taken), or 0 if it is not active. We also have binary decision variables, one for each hotel, indicating the duration of stay and the day we'll depart from the hotel.
+The objective function is the total cost of our holidays, i.e. cost of every hotel and every flight we take.
 
-### Decision Variables
-          
-First of all, we need to introduce some notation, along with our decision variables:
-* $x_{f}^{o,d,t} \in Z_2^{p(p-1)q}$ are binary decision variables, one for each flight in the dataset, having a value of 1 if a flight is active (i.e. to be taken), or 0 if it is not active. $o$ refers to the outbound city (origin), $d$ refers to the inbound city (destination), and $t$ is the day of travel. The total number of variables is $q$ (number of days in the dataset), times $p(p-1)$, as the same city cannot be an origin and a destination at the same time.
-* $x_{h}^{o,t_b,t_e} \in Z_2^{pq(q+1)/2}$ are, again, binary decision variables, one for each hotel, denoted by subscipt $o$ and duration of stay $(t_b, t_e)$, with $t_b$ being the day we'll start occupying a room in the hotel, and $t_e$, the day we'll depart from it. Note that, the number of elements is $p$ (one hotel for each city) times $q(q+1)/2$, which is the number of all possible stay durations (equal to the number of elements in the upper triangle of a square matrix). If, for example, we check-in on the 13th of July, we can only checkout on the days that follow (on the 14th, 15th etc), not the preceding ones (12th, 11th, etc).
-
-where: 
-* $C$ refers to the set of cities that will be visited, $p$ is the total number of cities, and $c = 0$ is the home node, from which we have to start and finish our trip.
-* $T$ refers to the set of days between July 1st ($t_0$) to August 1st, with $q$ being the total number of days between our one month time span.
-
-### Objective function
-
-The objective function is the total cost of our holidays, i.e. cost of every hotel and every flight we take:
-
-$$min_{\bar{x}_f, \bar{x}_h} = \sum_{i = 1}^{p} \sum_{j = 1, j \neq i}^{p} \sum_{k = 1}^{q} c_{f}^{i,j,k} x_{f}^{i,j,k} + \sum_{i = 1}^{p} \sum_{j = 1}^{q} \sum_{k = j + 1}^{q} c_{h}^{i, j, k} x_{h}^{i, j, k}$$
-
-with:
-
-* $c_{f}^{o,d,t} \in R^{p(p-1)q}$ are the costs of flying from city $o$ (origin) to city $d$ (destination) at time $t$
-* $c_{h}^{o,t_b,t_e} \in R^{pq(q+1)/2}$ are the costs of staying at city $o$, from day $t_b$ to day $t_e$.
-
-### Constraints
-
-While the objective function is easy to deduct, the constraints require a bit more work:
-
-First of all, we need to make sure that we start our holidays from the home node, and we also arrive back to the home node at the end of the holiday period. This means that there must be exactly one flight from the home node $c = 0$ (Amsterdam) at time $t = 0$, and exactly one flight towards the home node at the end $t = t_q$. All flights with a different outbound city in the dataset are not allowed:
-
-$$ \begin{align}
-\sum_{j = 1}^{p} x_f^{c_0, j, t_0} &= 1 \\ 
- \sum_{j = 1}^{p} x_f^{j, c_0, t_q} &= 1 \\
- \sum_{j = 1, j \neq c}^{p} x_f^{c, j, t_0} &= 0,~ \forall c \in C \\
- \sum_{j = 1, j \neq c}^{p} x_f^{j, c, t_q} &= 0,~ \forall c \in C
- \end{align}$$
-
-Moreover, we have to make sure that each city is visited at most once (apart from the home node). This also means that there is at most one flight towards every destination, and one flight from every origin:
-
-$$ \begin{align}
-\sum_{i = 0}^{q} \sum_{j = 1 + 1}^{q} x_h^{c, i, j} &\leq 1,~\forall \{c \in C~|~c \neq 0 \} \\
-\sum_{i = 0}^{p} \sum_{j = 0}^{q} x_f^{i,c,j} &\leq 1,~\forall c \in C \\
-\sum_{i = 0}^{p} \sum_{j = 0}^{q} x_f^{c,i,j} &\leq 1,~\forall c \in C
-\end{align} $$
-
-Each hotel stay must be accompanied by the corresponding inbound and outbound flight (there's no way to get to a city without taking a flight towards it, and you can't get out with another flight):
-
-$$
-x_f^{i,c,t_b} = x_h^{c,t_b,t_e} = x_f^{c, i, t_e},~\forall t_b \in T, ~ \forall t_e > t_b\in T, ~\forall c \in C
-$$
-
-At least $N$ cities will be visited. For cost minimisation (if the problem is formulated properly), this essentially means that exactly $N$ cities will be visited. Furthermore, at least $N + 1$ flights will be taken (+ 1 to return to the home node at the end):
-
-$$
-\begin{align}
-\sum_{i = 1}^{p} \sum_{j = 0}^{q} \sum_{k = j + 1}^{q} x_h^{i,j,k} &\leq N \\
-\sum_{i = 1}^{p} \sum_{j = 0, j \neq i}^{p} \sum_{k = 1}^{q} x_f^{i,j,k} &\leq N + 1
-\end{align}
-$$
-
-Finally, we need to implement a minimum stay duration of $K$ days at each city , apart from the home node. This means that, if a city is visited on a certain date, we need to restrict all outgoing flights for the next $K$ days. The equality constraints introduced above will then ensure that any other hotel stays for the next $K$ days will be zeroed out. This can be implemented with the following set of big-M constraints:
-
-$$
-\sum_{i = 1}^{p} \sum_{j = J}^{q} x_{f}^{c,i,j} \leq M \left(1 - \sum_{i = 1}^{p} \sum_{j=J}^{J+K} x_{f}^{i,c,k}\right),~\forall\{c \in C~|~c \neq 0 \},~\forall \{J \in T ~| ~J \leq q - K\}
-$$
-
-The above works for all intermediate nodes. We need to set the following constraints to- and from- the home node:
-
-$$
-\begin{align}
-\sum_{i = 0}^{p} \sum_{j = 0}^{p} \sum_{k = 1}^{K} x_f{i,j,k} &= 0 \\
-\sum_{i = 1}^{p} \sum_{j = 1}^{K} \sum_{k = j + 1}^{K+ 1} x_h^{i,j,k} &= 0
-\end{align}
-$$
-
-And that's about it. Next, code it all:
+Regarding constraints, we need the following:
+- we start our holidays from the home node, and we also arrive back to the home node at the end of the holiday period. This means that there must be exactly one flight from the home node (Amsterdam) at time $t = 0$, and exactly one flight towards the home node at the end. All flights with a different outbound city in the dataset are not allowed.
+- Moreover, we have to make sure that each city is visited at most once (apart from the home node). This also means that there is at most one flight towards every destination, and one flight from every origin.
+Each hotel stay must be accompanied by the corresponding inbound and outbound flight (there's no way to get to a city without taking a flight towards it, and you can't get out with another flight).
+- At least N cities will be visited. For cost minimisation (if the problem is formulated properly), this essentially means that exactly $N$ cities will be visited. Furthermore, at least $N + 1$ flights will be taken (+ 1 to return to the home node at the end).
+-Finally, we need to implement a minimum stay duration of $K$ days at each city, apart from the home node. This means that, if a city is visited on a certain date, we need to restrict all outgoing flights for the next $K$ days. The equality constraints introduced above will then ensure that any other hotel stays for the next $K$ days will be zeroed out. This can be implemented with the following set of big-M constraints.
+- We need to set additional constraints for the to- and from- home node.
 
 ## PuLP programming
-
 <a id="pulp"></a>
 
 PuLP has a fairly intuitive way of formulating the problem. In the following, we'll instantiate the problem, add one by one the constraints followed by the objective function, and then get the solution to the problem.
