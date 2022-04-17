@@ -14,23 +14,10 @@ Hotel and air-ticket fares were scraped from Trivago and Skyscanner, respectivel
     * [PuLP Programming](#pulp)
 * [Solution](#solution)
 
-
-# Introduction
-
-<a id="intro"></a>
-
-The worst part of traveling abroad for holidays is that one has to arrange means of transport and book a hotel. But what if we could automate part of the process?
-
-Suppose we have a list of destinations (multiple ones) in mind, and a predetermined holiday period. Normally, I would go online, and try to book hotels and flights to accomodate my holiday plan, always keeping cost in mind (unfortunately there's a limit to what I can afford). But what if my PC can answer this simple question: Given a list of destinations, can you find me the flights and hotels I need to book, in order to visit a subset of the destinations, as cheap as possible?
-
-Sounds like an optimisation problem, right?
-
 # Getting the Data
 <a id="data_gathering"></a>
 
-First things first, we need to define our destinations. Where would we like to go? Luckily, someone has already answered this for us: [Best places to travel in Europe - 2018](https://www.europeanbestdestinations.com/european-best-destinations-2018/).
-
-So, the best destinations are the following:
+First things first, we need to define our destinations. We'll use the [Best places to travel in Europe - 2018](https://www.europeanbestdestinations.com/european-best-destinations-2018/), according to which the best destinations are the following:
 - Wroclaw,
 - Bilbao,
 - Colmar, 
@@ -47,14 +34,14 @@ So, the best destinations are the following:
 - Vienna, 
 - Amsterdam.
 
-Next question is, when do we want to go on vacation? Let's assume that we have a month available between July 1st, up to and including August 1st.
+Let us alaso assume that we will be travelling from July 1st, up to and including August 1st.
 
 ## Searching for hotels
 <a id="hotel_gather"></a>
 
-Obviously, to answer the question at hand, we need to know how much it costs to stay in a hotel, at any one of the cities listed above, at any time between July 1st to August 1st. We can scrape the data we need from various websites available. Here, we'll use [Trivago](https://www.trivago.com/). The search page looks like the following:
-![main_hotel](img/trivago_main.png)
-Clearly, there are a few steps to take:
+Obviously, to answer the question at hand, we need to know how much it costs to stay in a hotel, at any one of the cities listed above, at any time between July 1st to August 1st. We can scrape the data we need from various websites available. Here, we'll use [Trivago](https://www.trivago.com/). 
+
+There are a few steps to take:
 1. Fire up a browser (obviously)
 2. Check for captchas or 'enable javascript' error messages (the latter tends to happen on Tor)
 3. Set our country to USA (It's goof to ensure consistency of the text that appears on the website)
